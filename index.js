@@ -1,3 +1,3 @@
-const Printer = require('./build/build');
+const pkg = require('./build/build');
 
-exports.Printer = Printer;
+exports.Printer = pkg.Printer;
