@@ -1,7 +1,7 @@
 {
-  "name": "npm-package-template",
+  "name": "dom-printer",
   "version": "1.0.0",
-  "description": "npm package template",
+  "description": "DOM printer",
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack --env.production ",
@@ -10,18 +10,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yinliguo/npm-package-template.git"
+    "url": "git+https://github.com/yinliguo/printer.git"
   },
   "keywords": [
     "npm",
-    "template"
+    "dom",
+    "printer"
   ],
   "author": "yinliguo",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yinliguo/npm-package-template/issues"
+    "url": "https://github.com/yinliguo/printer/issues"
   },
-  "homepage": "https://github.com/yinliguo/npm-package-template#readme",
+  "homepage": "https://github.com/yinliguo/printer#readme",
   "devDependencies": {
     "css-loader": "^3.2.0",
     "node-sass": "^4.13.0",

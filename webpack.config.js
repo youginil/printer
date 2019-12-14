@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = env => {
   return {
-    entry: './src/Cat.ts',
+    entry: './src/printer.ts',
     output: {
       filename: 'build.js',
       path: path.resolve(__dirname, 'build'),
@@ -26,7 +26,7 @@ module.exports = env => {
       port: 9000,
       disableHostCheck: true,
       filename: 'viewer.js',
-      // host: '10.10.24.248'
+      host: '10.10.25.141'
     },
     watchOptions: {
       ignored: ['node_modules']

@@ -91,31 +91,217 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/Cat.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/printer.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/Cat.ts":
-/*!********************!*\
-  !*** ./src/Cat.ts ***!
-  \********************/
+/***/ "./src/host.ts":
+/*!*********************!*\
+  !*** ./src/host.ts ***!
+  \*********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cat = /** @class */ (function () {
-    function Cat(name) {
-        this.name = name;
+var ua = window.navigator.userAgent;
+function isEdge() {
+    return ua.indexOf('Edge') > 0;
+}
+exports.isEdge = isEdge;
+function isIE11() {
+    return ua.indexOf('Trident') >= 0 && ua.indexOf('rv:11.0') >= 0;
+}
+exports.isIE11 = isIE11;
+function isIE10() {
+    return ua.indexOf('MSIE 10.0') > 0;
+}
+exports.isIE10 = isIE10;
+function isIE9() {
+    return ua.indexOf('MSIE 9.0') > 0;
+}
+exports.isIE9 = isIE9;
+function isIE() {
+    return isIE11() || isIE10() || isIE9();
+}
+exports.isIE = isIE;
+function isChrome() {
+    return ua.indexOf('Chrome') > 0 && ua.indexOf('Edge') < 0;
+}
+exports.isChrome = isChrome;
+function isFirefox() {
+    return ua.indexOf('Firefox') > 0;
+}
+exports.isFirefox = isFirefox;
+function isSafari() {
+    return ua.indexOf('Safari') > 0 && ua.indexOf('Chrome') < 0;
+}
+exports.isSafari = isSafari;
+
+
+/***/ }),
+
+/***/ "./src/printer.ts":
+/*!************************!*\
+  !*** ./src/printer.ts ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var host_1 = __webpack_require__(/*! ./host */ "./src/host.ts");
+var NEW_PAGE_CLASS = 'prt-new-page';
+var NO_PRINT_CLASS = 'prt-no-print';
+var Printer = /** @class */ (function () {
+    function Printer(options) {
+        var _this = this;
+        this.importCSS = true;
+        this.ready = false;
+        this.waitingPrint = false;
+        this.contentTransitStation = [];
+        options = options || {};
+        this.iframe = document.createElement('iframe');
+        this.iframe.style.width = '0';
+        this.iframe.style.height = '0';
+        this.iframe.style.position = 'fixed';
+        this.iframe.style.left = '-1000px';
+        this.iframe.style.top = '-1000px';
+        document.body.appendChild(this.iframe);
+        if ('importCSS' in options) {
+            this.importCSS = !!options.importCSS;
+        }
+        var printAfterLoadIfWaiting = function () {
+            if (!_this.waitingPrint) {
+                return;
+            }
+            _this.contentTransitStation.forEach(function (item) {
+                _this.append(item);
+            });
+            _this.print();
+        };
+        if (host_1.isIE()) {
+            this.iframe.contentWindow.onload = function () {
+                _this._onload(printAfterLoadIfWaiting);
+            };
+        }
+        else if (host_1.isFirefox()) {
+            setTimeout(function () {
+                _this._onload(printAfterLoadIfWaiting);
+            }, 0);
+        }
+        else {
+            this._onload(printAfterLoadIfWaiting);
+        }
+        if (options.content) {
+            this.append(options.content);
+        }
     }
-    Cat.prototype.selfIntroduce = function () {
-        return "Hello, I am " + this.name + ".";
+    Printer.prototype._onload = function (cb) {
+        var _this = this;
+        this.head = this.iframe.contentWindow.document.head;
+        this.body = this.iframe.contentWindow.document.body;
+        var printerStyle = document.createElement('style');
+        printerStyle.innerText = "@media print {." + NO_PRINT_CLASS + " {display: none;}." + NEW_PAGE_CLASS + " {page-break-before: always;}}";
+        this.head.appendChild(printerStyle);
+        if (!this.importCSS) {
+            this.ready = true;
+            cb();
+            return;
+        }
+        var linkElements = document.querySelectorAll('link[type="text/css"]');
+        var linkCount = linkElements.length;
+        for (var i = 0; i < linkElements.length; i++) {
+            var link = document.createElement('link');
+            link.type = 'text/css';
+            link.rel = 'stylesheet';
+            link.href = linkElements[i].href;
+            this.head.appendChild(link);
+            link.onerror = link.onload = function () {
+                linkCount--;
+                if (linkCount > 0) {
+                    return;
+                }
+                _this.ready = true;
+                cb();
+            };
+        }
+        // TODO link style 顺序
+        var styleElements = document.getElementsByTagName('style');
+        for (var i = 0; i < styleElements.length; i++) {
+            var style = document.createElement('style');
+            style.innerText = styleElements[i].innerText.replace(/\r|\n|\r\n/g, '');
+            this.head.appendChild(style);
+        }
+        if (linkCount === 0) {
+            this.ready = true;
+            cb();
+        }
     };
-    return Cat;
+    Printer.prototype.print = function () {
+        if (!this.ready) {
+            this.waitingPrint = true;
+            return this;
+        }
+        if (host_1.isIE()) {
+            this.iframe.contentWindow.document.execCommand('print', false);
+        }
+        else {
+            this.iframe.contentWindow.print();
+        }
+        this.waitingPrint = false;
+        return this;
+    };
+    Printer.prototype.append = function () {
+        var _a;
+        var elems = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            elems[_i] = arguments[_i];
+        }
+        if (!this.ready) {
+            (_a = this.contentTransitStation).push.apply(_a, elems);
+            return this;
+        }
+        var elem;
+        for (var i = 0; i < elems.length; i++) {
+            elem = elems[i];
+            if (elem instanceof Element) {
+                this.body.appendChild(elem.cloneNode(true));
+            }
+            else if (elem instanceof HTMLCollection || elem instanceof NodeList) {
+                for (var j = 0; j < elem.length; j++) {
+                    this.body.appendChild(elem[j].cloneNode(true));
+                }
+            }
+        }
+        return this;
+    };
+    Printer.prototype.splitPage = function () {
+        var div = document.createElement('div');
+        div.className = NEW_PAGE_CLASS;
+        if (!this.ready) {
+            this.contentTransitStation.push(div);
+            return this;
+        }
+        this.body.appendChild(div);
+        return this;
+    };
+    Printer.prototype.clear = function () {
+        if (!this.ready) {
+            return this;
+        }
+        this.body.innerHTML = '';
+        return this;
+    };
+    Printer.prototype.destroy = function () {
+        this.iframe.remove();
+    };
+    return Printer;
 }());
-exports.Cat = Cat;
+exports.Printer = Printer;
 
 
 /***/ })
