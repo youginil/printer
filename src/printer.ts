@@ -6,6 +6,7 @@ const NO_PRINT_CLASS = 'prt-no-print';
 type Options = {
     content?: Element | HTMLCollection | NodeList
     importCSS?: Boolean
+    preview?: Boolean
 }
 
 export class Printer {
@@ -14,6 +15,7 @@ export class Printer {
     private body: HTMLElement | null = null;
 
     private readonly importCSS: boolean = true;
+    private readonly preview: boolean = false;
 
     private ready: boolean = false;
     private waitingPrint: boolean = false;
@@ -23,15 +25,19 @@ export class Printer {
     constructor(options: Options) {
         options = options || {};
         this.iframe = document.createElement('iframe');
+        this.iframe.style.position = 'fixed';
         this.iframe.style.width = '0';
         this.iframe.style.height = '0';
-        this.iframe.style.position = 'fixed';
         this.iframe.style.left = '-1000px';
         this.iframe.style.top = '-1000px';
         document.body.appendChild(this.iframe);
 
         if ('importCSS' in options) {
             this.importCSS = !!options.importCSS;
+        }
+
+        if ('preview' in options) {
+            this.preview = !!options.preview;
         }
 
         const printAfterLoadIfWaiting = () => {
@@ -110,10 +116,19 @@ export class Printer {
             this.waitingPrint = true;
             return this;
         }
-        if (isIE()) {
-            ((this.iframe as HTMLIFrameElement).contentWindow as Window).document.execCommand('print', false);
+        if (this.preview) {
+            (this.iframe as HTMLIFrameElement).style.width = '100%';
+            (this.iframe as HTMLIFrameElement).style.height = '100%';
+            (this.iframe as HTMLIFrameElement).style.background = 'white';
+            (this.iframe as HTMLIFrameElement).style.left = '0';
+            (this.iframe as HTMLIFrameElement).style.top = '0';
+            (this.iframe as HTMLIFrameElement).style.zIndex = '99999';
         } else {
-            ((this.iframe as HTMLIFrameElement).contentWindow as Window).print();
+            if (isIE()) {
+                ((this.iframe as HTMLIFrameElement).contentWindow as Window).document.execCommand('print', false);
+            } else {
+                ((this.iframe as HTMLIFrameElement).contentWindow as Window).print();
+            }
         }
         this.waitingPrint = false;
         return this;

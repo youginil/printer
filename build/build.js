@@ -162,19 +162,23 @@ var Printer = /** @class */ (function () {
         this.head = null;
         this.body = null;
         this.importCSS = true;
+        this.preview = false;
         this.ready = false;
         this.waitingPrint = false;
         this.contentTransitStation = [];
         options = options || {};
         this.iframe = document.createElement('iframe');
+        this.iframe.style.position = 'fixed';
         this.iframe.style.width = '0';
         this.iframe.style.height = '0';
-        this.iframe.style.position = 'fixed';
         this.iframe.style.left = '-1000px';
         this.iframe.style.top = '-1000px';
         document.body.appendChild(this.iframe);
         if ('importCSS' in options) {
             this.importCSS = !!options.importCSS;
+        }
+        if ('preview' in options) {
+            this.preview = !!options.preview;
         }
         var printAfterLoadIfWaiting = function () {
             if (!_this.waitingPrint) {
@@ -249,11 +253,21 @@ var Printer = /** @class */ (function () {
             this.waitingPrint = true;
             return this;
         }
-        if (host_1.isIE()) {
-            this.iframe.contentWindow.document.execCommand('print', false);
+        if (this.preview) {
+            this.iframe.style.width = '100%';
+            this.iframe.style.height = '100%';
+            this.iframe.style.background = 'white';
+            this.iframe.style.left = '0';
+            this.iframe.style.top = '0';
+            this.iframe.style.zIndex = '99999';
         }
         else {
-            this.iframe.contentWindow.print();
+            if (host_1.isIE()) {
+                this.iframe.contentWindow.document.execCommand('print', false);
+            }
+            else {
+                this.iframe.contentWindow.print();
+            }
         }
         this.waitingPrint = false;
         return this;

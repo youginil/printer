@@ -22,7 +22,9 @@
 <button type="button" id="print">Print box</button>
 <script>
 document.getElementById('print').addEventListener('click', function () {
-  var p = new pkg.Printer();
+  var p = new pkg.Printer({
+    preview: true
+  });
   window.p = p;
   var boxes = document.querySelectorAll('.box');
   for (var i = 0; i < boxes.length; i++) {
