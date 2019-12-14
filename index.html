@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>npm template</title>
+    <script src="build.js"></script>
+</head>
+<body>
+<input type="text" id="cat-name">
+<button type="button" id="run">Self introduce</button>
+<h1 id="run-info"></h1>
+<script>
+document.getElementById('run').addEventListener('click', function() {
+  var name = document.getElementById('cat-name').value.trim();
+  if (name.length === 0) {
+    alert('Please input a cat name');
+    return;
+  }
+  var cat = new pkg.Cat(name);
+  document.getElementById('run-info').innerText = cat.selfIntroduce();
+});
+</script>
+</body>
+</html>
