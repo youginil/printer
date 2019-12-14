@@ -159,6 +159,8 @@ var NO_PRINT_CLASS = 'prt-no-print';
 var Printer = /** @class */ (function () {
     function Printer(options) {
         var _this = this;
+        this.head = null;
+        this.body = null;
         this.importCSS = true;
         this.ready = false;
         this.waitingPrint = false;
@@ -202,8 +204,9 @@ var Printer = /** @class */ (function () {
     }
     Printer.prototype._onload = function (cb) {
         var _this = this;
-        this.head = this.iframe.contentWindow.document.head;
-        this.body = this.iframe.contentWindow.document.body;
+        var doc = this.iframe.contentWindow.document;
+        this.head = doc.head;
+        this.body = doc.body;
         var printerStyle = document.createElement('style');
         printerStyle.innerText = "@media print {." + NO_PRINT_CLASS + " {display: none;}." + NEW_PAGE_CLASS + " {page-break-before: always;}}";
         this.head.appendChild(printerStyle);
@@ -298,6 +301,9 @@ var Printer = /** @class */ (function () {
     };
     Printer.prototype.destroy = function () {
         this.iframe.remove();
+        this.iframe = null;
+        this.head = null;
+        this.body = null;
     };
     return Printer;
 }());

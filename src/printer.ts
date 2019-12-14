@@ -9,11 +9,11 @@ type Options = {
 }
 
 export class Printer {
-    private readonly iframe: HTMLIFrameElement;
-    private head: HTMLHeadElement | undefined;
-    private body: HTMLElement | undefined;
+    private iframe: HTMLIFrameElement | null;
+    private head: HTMLHeadElement | null = null;
+    private body: HTMLElement | null = null;
 
-    private importCSS: boolean = true;
+    private readonly importCSS: boolean = true;
 
     private ready: boolean = false;
     private waitingPrint: boolean = false;
@@ -60,8 +60,9 @@ export class Printer {
     }
 
     _onload(cb: Function) {
-        this.head = (this.iframe.contentWindow as Window).document.head;
-        this.body = (this.iframe.contentWindow as Window).document.body;
+        const doc = ((this.iframe as HTMLIFrameElement).contentWindow as Window).document;
+        this.head = doc.head;
+        this.body = doc.body;
 
         const printerStyle = document.createElement('style');
         printerStyle.innerText = `@media print {.${NO_PRINT_CLASS} {display: none;}.${NEW_PAGE_CLASS} {page-break-before: always;}}`;
@@ -110,9 +111,9 @@ export class Printer {
             return this;
         }
         if (isIE()) {
-            (this.iframe.contentWindow as Window).document.execCommand('print', false);
+            ((this.iframe as HTMLIFrameElement).contentWindow as Window).document.execCommand('print', false);
         } else {
-            (this.iframe.contentWindow as Window).print();
+            ((this.iframe as HTMLIFrameElement).contentWindow as Window).print();
         }
         this.waitingPrint = false;
         return this;
@@ -157,6 +158,9 @@ export class Printer {
     }
 
     destroy() {
-        this.iframe.remove();
+        (this.iframe as HTMLIFrameElement).remove();
+        this.iframe = null;
+        this.head = null;
+        this.body = null;
     }
 }
