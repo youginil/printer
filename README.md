@@ -1,5 +1,5 @@
 # Printer
-![npm](https://img.shields.io/v/npm/dom-printer)
+![npm](https://img.shields.io/npm/v/dom-printer)
 ![browser](https://img.shields.io/badge/Browsers-Chrome%2C%20IE9--11%2C%20Edge%2C%20Safari%2C%20Firefox-green)
 
 Printer for browsers.
