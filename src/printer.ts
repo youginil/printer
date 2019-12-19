@@ -20,7 +20,10 @@ export class Printer {
     private ready: boolean = false;
     private waitingPrint: boolean = false;
 
-    private contentTransitStation: Array<Element | HTMLCollection | NodeList> = [];
+    private contentTransitStation: Array<{
+        elem: Element | HTMLCollection | NodeList,
+        clone: boolean
+    }> = [];
 
     constructor(options: Options) {
         options = options || {};
@@ -45,7 +48,7 @@ export class Printer {
                 return;
             }
             this.contentTransitStation.forEach((item) => {
-                this.append(item);
+                this.append(item.elem, item.clone);
             });
             this.print();
         };
@@ -134,20 +137,19 @@ export class Printer {
         return this;
     }
 
-    append(...elems: Array<Element | HTMLCollection | NodeList>) {
+    append(elem: Element | HTMLCollection | NodeList, clone: boolean = true) {
         if (!this.ready) {
-            this.contentTransitStation.push(...elems);
+            this.contentTransitStation.push({
+                elem: elem,
+                clone: clone
+            });
             return this;
         }
-        let elem;
-        for (let i = 0; i < elems.length; i++) {
-            elem = elems[i];
-            if (elem instanceof Element) {
-                (this.body as HTMLBodyElement).appendChild(elem.cloneNode(true));
-            } else if (elem instanceof HTMLCollection || elem instanceof NodeList) {
-                for (let j = 0; j < elem.length; j++) {
-                    (this.body as HTMLBodyElement).appendChild(elem[j].cloneNode(true));
-                }
+        if (elem instanceof Element) {
+            (this.body as HTMLBodyElement).appendChild(clone ? elem.cloneNode(true) : elem);
+        } else if (elem instanceof HTMLCollection || elem instanceof NodeList) {
+            for (let j = 0; j < elem.length; j++) {
+                (this.body as HTMLBodyElement).appendChild(clone ? elem[j].cloneNode(true) : elem[j]);
             }
         }
         return this;
@@ -157,7 +159,10 @@ export class Printer {
         const div = document.createElement('div');
         div.className = NEW_PAGE_CLASS;
         if (!this.ready) {
-            this.contentTransitStation.push(div);
+            this.contentTransitStation.push({
+                elem: div,
+                clone: false
+            });
             return this;
         }
         (this.body as HTMLBodyElement).appendChild(div);

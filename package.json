@@ -1,6 +1,6 @@
 {
   "name": "dom-printer",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "DOM printer",
   "main": "index.js",
   "scripts": {

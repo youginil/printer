@@ -185,7 +185,7 @@ var Printer = /** @class */ (function () {
                 return;
             }
             _this.contentTransitStation.forEach(function (item) {
-                _this.append(item);
+                _this.append(item.elem, item.clone);
             });
             _this.print();
         };
@@ -272,26 +272,21 @@ var Printer = /** @class */ (function () {
         this.waitingPrint = false;
         return this;
     };
-    Printer.prototype.append = function () {
-        var _a;
-        var elems = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            elems[_i] = arguments[_i];
-        }
+    Printer.prototype.append = function (elem, clone) {
+        if (clone === void 0) { clone = true; }
         if (!this.ready) {
-            (_a = this.contentTransitStation).push.apply(_a, elems);
+            this.contentTransitStation.push({
+                elem: elem,
+                clone: clone
+            });
             return this;
         }
-        var elem;
-        for (var i = 0; i < elems.length; i++) {
-            elem = elems[i];
-            if (elem instanceof Element) {
-                this.body.appendChild(elem.cloneNode(true));
-            }
-            else if (elem instanceof HTMLCollection || elem instanceof NodeList) {
-                for (var j = 0; j < elem.length; j++) {
-                    this.body.appendChild(elem[j].cloneNode(true));
-                }
+        if (elem instanceof Element) {
+            this.body.appendChild(clone ? elem.cloneNode(true) : elem);
+        }
+        else if (elem instanceof HTMLCollection || elem instanceof NodeList) {
+            for (var j = 0; j < elem.length; j++) {
+                this.body.appendChild(clone ? elem[j].cloneNode(true) : elem[j]);
             }
         }
         return this;
@@ -300,7 +295,10 @@ var Printer = /** @class */ (function () {
         var div = document.createElement('div');
         div.className = NEW_PAGE_CLASS;
         if (!this.ready) {
-            this.contentTransitStation.push(div);
+            this.contentTransitStation.push({
+                elem: div,
+                clone: false
+            });
             return this;
         }
         this.body.appendChild(div);
