@@ -6,6 +6,7 @@ const NO_PRINT_CLASS = 'prt-no-print';
 type Options = {
     content?: Element | HTMLCollection | NodeList
     importCSS?: Boolean
+    style?: string
     preview?: Boolean
 }
 
@@ -14,6 +15,7 @@ export class Printer {
     private head: HTMLHeadElement | null = null;
     private body: HTMLElement | null = null;
 
+    private style: string = '';
     private readonly importCSS: boolean = true;
     private readonly preview: boolean = false;
 
@@ -27,6 +29,7 @@ export class Printer {
 
     constructor(options: Options) {
         options = options || {};
+        this.style = options.style || '';
         this.iframe = document.createElement('iframe');
         this.iframe.style.position = 'fixed';
         this.iframe.style.width = '0';
@@ -74,7 +77,7 @@ export class Printer {
         this.body = doc.body;
 
         const printerStyle = document.createElement('style');
-        printerStyle.innerText = `@media print {.${NO_PRINT_CLASS} {display: none;}.${NEW_PAGE_CLASS} {page-break-before: always;}}`;
+        printerStyle.innerText = `@media print {.${NO_PRINT_CLASS} {display: none;}.${NEW_PAGE_CLASS} {page-break-before: always;}}${this.style}`;
         this.head.appendChild(printerStyle);
 
         if (!this.importCSS) {

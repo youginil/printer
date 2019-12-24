@@ -161,12 +161,14 @@ var Printer = /** @class */ (function () {
         var _this = this;
         this.head = null;
         this.body = null;
+        this.style = '';
         this.importCSS = true;
         this.preview = false;
         this.ready = false;
         this.waitingPrint = false;
         this.contentTransitStation = [];
         options = options || {};
+        this.style = options.style || '';
         this.iframe = document.createElement('iframe');
         this.iframe.style.position = 'fixed';
         this.iframe.style.width = '0';
@@ -212,7 +214,7 @@ var Printer = /** @class */ (function () {
         this.head = doc.head;
         this.body = doc.body;
         var printerStyle = document.createElement('style');
-        printerStyle.innerText = "@media print {." + NO_PRINT_CLASS + " {display: none;}." + NEW_PAGE_CLASS + " {page-break-before: always;}}";
+        printerStyle.innerText = "@media print {." + NO_PRINT_CLASS + " {display: none;}." + NEW_PAGE_CLASS + " {page-break-before: always;}}" + this.style;
         this.head.appendChild(printerStyle);
         if (!this.importCSS) {
             this.ready = true;

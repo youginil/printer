@@ -20,6 +20,7 @@ Name        | Type                              | Attributes  | Description
 ------------|-----------------------------------|-------------|-----------------
 content     | Element, HTMLCollection, NodeList | <optional\> | Content for print
 importCSS   | Boolean                           | <optional\> | Import style of current page or not. The default is true
+style       | String                            | <optional\> | Custom style. The default is ''
 preview     | Boolean                           | <optional\> | Preview instead of print. The default is false
 
 ### Methods
