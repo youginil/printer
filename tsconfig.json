@@ -3,10 +3,14 @@
     "strict": true,
     "module": "commonjs",
     "target": "es5",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "sourceMap": true,
-    "lib": ["dom", "es2015", "es2018.promise"]
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./lib",
+    "lib": ["dom", "ESNext"]
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["./src/*.ts"]
 }

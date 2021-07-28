@@ -6,11 +6,11 @@ Printer for browsers.
 
 ### Usage
 ````
-import {Printer} from "dom-printer";
+import Printer from "dom-printer";
 
 const p = new Printer();
 p.append(document.getElementById('first-page'));
-p.splitPage();
+p.split();
 p.append(document.getElementById('second-page'));
 p.print();
 ````

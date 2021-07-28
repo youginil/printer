@@ -1,12 +1,19 @@
 {
   "name": "dom-printer",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "DOM printer",
   "main": "index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --env.production ",
-    "dev": "./node_modules/.bin/webpack-dev-server --inline --env.production=false",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc --emitDeclarationOnly && vite build && api-extractor run --local --verbose"
+  },
+  "module": "./dist/dom-printer.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/dom-printer.es.js",
+      "require": "./dist/dom-printer.umd.js"
+    }
   },
   "repository": {
     "type": "git",
@@ -23,14 +30,9 @@
   },
   "homepage": "https://github.com/yinliguo/printer#readme",
   "devDependencies": {
-    "css-loader": "^3.2.0",
-    "node-sass": "^4.13.0",
-    "sass-loader": "^8.0.0",
-    "style-loader": "^1.0.0",
-    "ts-loader": "^6.2.1",
+    "@types/node": "^16.4.5",
+    "prettier": "2.3.2",
     "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "vite": "^2.4.4"
   }
 }

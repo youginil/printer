@@ -3,14 +3,20 @@ import {isFirefox, isIE} from "./host";
 const NEW_PAGE_CLASS = 'prt-new-page';
 const NO_PRINT_CLASS = 'prt-no-print';
 
-type Options = {
+/**
+ * @public
+ */
+export type Options = {
     content?: Element | HTMLCollection | NodeList
     importCSS?: Boolean
     style?: string
     preview?: Boolean
 }
 
-export class Printer {
+/**
+ * @public
+ */
+export default class Printer {
     private iframe: HTMLIFrameElement | null;
     private head: HTMLHeadElement | null = null;
     private body: HTMLElement | null = null;
@@ -158,7 +164,7 @@ export class Printer {
         return this;
     }
 
-    splitPage() {
+    split() {
         const div = document.createElement('div');
         div.className = NEW_PAGE_CLASS;
         if (!this.ready) {

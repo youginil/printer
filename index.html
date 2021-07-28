@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Browser Printer</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <script src="build.js"></script>
+    <title>Printer</title>
+    <script type="module" src="main.ts"></script>
     <style>
         .box {
             display: inline-block;
@@ -20,21 +19,5 @@
 <div class="box">1</div>
 <div class="box">2</div>
 <button type="button" id="print">Print box</button>
-<script>
-document.getElementById('print').addEventListener('click', function () {
-  var p = new pkg.Printer({
-    // preview: true
-  });
-  window.p = p;
-  var boxes = document.querySelectorAll('.box');
-  for (var i = 0; i < boxes.length; i++) {
-    p.append(boxes[i]);
-    if (i !== boxes.length - 1) {
-      p.splitPage();
-    }
-  }
-  p.print();
-});
-</script>
 </body>
 </html>
