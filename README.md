@@ -26,6 +26,6 @@ preview     | Boolean                           | <optional\> | Preview instead 
 ### Methods
 * `print()` Print action
 * `append(elem: Element | HTMLCollection | NodeList, clone: boolean = true)` Append element
-* `splitPage()` Split page
+* `split()` Split page
 * `clear()` Clear content
 * `destroy()` Destroy printer instance
